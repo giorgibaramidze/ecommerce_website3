@@ -28,3 +28,15 @@ class Product(models.Model):
     class Meta:
         ordering = ['-modified_at']
         db_table = 'product'
+
+
+class ProductGallery(models.Model):
+    product = models.ForeignKey(Product, default=None, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='products')
+
+    def __str__(self):
+        return self.product.product_name
+    
+    class Meta:
+        verbose_name = 'Product Gallery'
+        verbose_name_plural = "Product Gallery"
