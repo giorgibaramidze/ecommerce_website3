@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from accounts.models import Account
 
 class Category(models.Model):
     category_name = models.CharField(max_length=50, unique=True)
@@ -35,3 +36,10 @@ class SubCategory(models.Model):
 
     def __str__(self):
         return self.sub_category_name
+    
+class Brand(models.Model):
+    created_by = models.ForeignKey(Account, blank=True, null=True, on_delete=models.SET_NULL)
+    brand_name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.brand_name

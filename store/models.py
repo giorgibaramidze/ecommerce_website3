@@ -8,7 +8,7 @@ import uuid
 import os
 
 class Product(models.Model):
-    user = models.ForeignKey(Account, blank=True, null=True, on_delete=models.SET_NULL)
+    created_by = models.ForeignKey(Account, blank=True, null=True, on_delete=models.SET_NULL)
     category = models.ForeignKey(SubCategory, blank=True, null=True, on_delete=models.SET_NULL)
     product_name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
@@ -20,7 +20,7 @@ class Product(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
     def get_absolute_url(self):
-        return reverse('product_detail', args=[self.slug])
+        return reverse('product_detail', args=[self.category.category.slug, self.category.slug, self.slug])
 
     def __str__(self):
         return self.product_name

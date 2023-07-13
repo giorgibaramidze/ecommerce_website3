@@ -10,9 +10,9 @@ class ProductGalleryInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('thubnail', 'product_name', 'price', 'stock', 'modified_at', 'is_available', 'user')
+    list_display = ('thubnail', 'product_name', 'price', 'stock', 'modified_at', 'is_available', 'created_by')
     prepopulated_fields = {'slug': ('product_name',)}
-    readonly_fields = ('user',)
+    readonly_fields = ('created_by',)
     inlines = [ProductGalleryInline]
     
     def thubnail(self, object):
@@ -20,5 +20,5 @@ class ProductAdmin(admin.ModelAdmin):
     thubnail.short_description = "image"
 
     def save_model(self, request, obj, form, change):
-        obj.user = request.user
+        obj.created_by = request.user
         super().save_model(request, obj, form, change)
