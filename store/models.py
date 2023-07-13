@@ -4,6 +4,8 @@ from accounts.models import Account
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from category.models import SubCategory
+import uuid
+import os
 
 class Product(models.Model):
     user = models.ForeignKey(Account, blank=True, null=True, on_delete=models.SET_NULL)
@@ -12,7 +14,6 @@ class Product(models.Model):
     slug = models.SlugField(max_length=200, unique=True)
     description = models.TextField(max_length=500)
     price = models.IntegerField(validators=[MinValueValidator(0)])
-    image = models.ImageField(upload_to='products', null=True)
     stock = models.IntegerField(validators=[MinValueValidator(0)])
     is_available = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -31,11 +32,17 @@ class Product(models.Model):
 
 
 class ProductGallery(models.Model):
-    product = models.ForeignKey(Product, default=None, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='products')
+
+    def get_file_path(instance, filename):
+        ext = filename.split('.')[-1]
+        filename = "%s.%s" % (uuid.uuid4(), ext)
+        return os.path.join('products', filename)
+
+    product = models.ForeignKey(Product, default=None, on_delete=models.CASCADE, related_name='product_gallery')
+    image = models.ImageField(upload_to=get_file_path)
 
     def __str__(self):
-        return self.product.product_name
+        return self.image.url
     
     class Meta:
         verbose_name = 'Product Gallery'
