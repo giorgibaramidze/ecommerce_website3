@@ -39,7 +39,7 @@ class SubCategory(models.Model):
     
 class Brand(models.Model):
     created_by = models.ForeignKey(Account, blank=True, null=True, on_delete=models.SET_NULL)
-    brand_name = models.CharField(max_length=30)
+    brand_name = models.CharField(max_length=30, unique=True)
 
     def __str__(self):
         return self.brand_name

@@ -13,7 +13,7 @@ class CategoryAdmin(admin.ModelAdmin):
     inlines = [SubCategoryInline]
 
 
-admin.register(Brand)
+@admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
     list_display = ('brand_name', 'created_by')
     readonly_fields = ('created_by',)
@@ -22,9 +22,9 @@ class BrandAdmin(admin.ModelAdmin):
         obj.created_by = request.user
         super().save_model(request, obj, form, change)
 
-@admin.register(SubCategory)
-class SubCategoryAdmin(admin.ModelAdmin):
-    list_display = ('category', 'sub_category_name', 'modified_at', 'created_at')
-    prepopulated_fields = {'slug': ('sub_category_name',)}
+# @admin.register(SubCategory)
+# class SubCategoryAdmin(admin.ModelAdmin):
+#     list_display = ('category', 'sub_category_name', 'modified_at', 'created_at')
+#     prepopulated_fields = {'slug': ('sub_category_name',)}
 
 # Register your models here.

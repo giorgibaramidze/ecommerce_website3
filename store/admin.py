@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, ProductGallery
+from .models import Product, ProductGallery, ProductFeature
 import admin_thumbnails
 from django.utils.html import format_html
 
@@ -8,12 +8,16 @@ class ProductGalleryInline(admin.TabularInline):
     model = ProductGallery
     extra = 1
 
+class ProductFeatureInline(admin.StackedInline):
+    model = ProductFeature
+    extra = 0
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('thubnail', 'product_name', 'price', 'stock', 'modified_at', 'is_available', 'created_by')
     prepopulated_fields = {'slug': ('product_name',)}
     readonly_fields = ('created_by',)
-    inlines = [ProductGalleryInline]
+    inlines = [ProductGalleryInline, ProductFeatureInline]
     
     def thubnail(self, object):
         return format_html('<img src="{}" width="60" height="60">'.format(object.product_gallery.first()))
