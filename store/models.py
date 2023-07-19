@@ -3,14 +3,14 @@ from django.urls import reverse
 from accounts.models import Account
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
-from category.models import SubCategory, Brand
+from category.models import SubCategory, Brand, Category
 import uuid
 import os
 
 class Product(models.Model):
     created_by = models.ForeignKey(Account, blank=True, null=True, on_delete=models.SET_NULL)
     product_name = models.CharField(max_length=200, unique=True)
-    category = models.ForeignKey(SubCategory, blank=True, null=True, on_delete=models.SET_NULL)
+    sub_category = models.ForeignKey(SubCategory, blank=True, null=True, on_delete=models.SET_NULL, related_name='sub_category')
     brand = models.ForeignKey(Brand, blank=True, null=True, on_delete=models.SET_NULL)
     model_pn = models.CharField(max_length=30, blank=True, null=True)
     slug = models.SlugField(max_length=200, unique=True)
@@ -21,8 +21,8 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
-    def get_absolute_url(self):
-        return reverse('product_detail', args=[self.category.category.slug, self.category.slug, self.slug])
+    def get_product_detail_url(self):
+        return reverse('product_detail', args=[self.category.slug, self.sub_category.slug, self.slug])
 
     def __str__(self):
         return self.product_name
@@ -58,7 +58,10 @@ class ProductFeature(models.Model):
         ("no", "No")
     ]
 
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+    # refregerator
+    climate_class = models.CharField(max_length=30, blank=True, null=True)
+    product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name="feature")
     construction_type= models.CharField(max_length=30, blank=True, null=True)
     type_of_control = models.CharField(max_length=30, blank=True, null=True)
     display = models.CharField(max_length=30, blank=True, null=True)

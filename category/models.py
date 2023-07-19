@@ -15,7 +15,7 @@ class Category(models.Model):
         db_table = 'category'
 
     def get_absolute_url(self):
-        return reverse('products_by_category', args=[self.slug])
+        return reverse('product_list', args=[self.slug])
 
     
     def __str__(self):
@@ -29,6 +29,7 @@ class SubCategory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
+
     class Meta:
         db_table = 'sub_category'
         verbose_name = 'sub category'
@@ -38,8 +39,15 @@ class SubCategory(models.Model):
         return self.sub_category_name
     
 class Brand(models.Model):
+    sub_category = models.ManyToManyField(SubCategory)
     created_by = models.ForeignKey(Account, blank=True, null=True, on_delete=models.SET_NULL)
     brand_name = models.CharField(max_length=30, unique=True)
 
+    class Meta:
+        db_table = 'brand'
+
     def __str__(self):
         return self.brand_name
+    
+
+
